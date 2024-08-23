@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container {
+            padding: 20px;
+        }
+
+        .heading-area {
+            border: 1px solid #ccc;
+            padding: 20px;
+            position: relative;
+            box-sizing: border-box;
+            /* Ensures padding is included in width/height calculations */
+        }
+
+        .heading-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            /* Allows content to wrap if it overflows */
+        }
+
+        .hd-title {
+            margin: 0;
+            font-size: 24px;
+            flex-grow: 1;
+            /* Allows the title to take up available space */
+            overflow: hidden;
+            /* Hides overflow if the content is too large */
+            text-overflow: ellipsis;
+            /* Adds ellipsis (...) if text is too long */
+            white-space: nowrap;
+            /* Prevents the title text from wrapping to a new line */
+        }
+
+        .hd-x {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            /* Prevents the close button area from shrinking */
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .close-icon {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .input-area {
+            margin-top: 10px;
+        }
+
+        .input-row {
+            margin-bottom: 10px;
+        }
+
+        .input-row label {
+            margin-right: 10px;
+        }
+
+        .align-btn,
+        .color-btn {
+            margin-right: 5px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="heading-area">
+            <div class="heading-top">
+                <h1 class="hd-title">Heading</h1>
+                <div class="hd-x">
+                    <button class="close-btn" id="closeHeadingBtn">Close</button>
+                    <span class="close-icon" id="closeHeadingIcon">X</span>
+                </div>
+            </div>
+            <div class="input-area">
+                <div class="input-row">
+                    <label for="headingText">Heading Text:</label>
+                    <input type="text" id="headingText" placeholder="Enter heading...">
+                </div>
+                <div class="input-row">
+                    <label>Text Alignment:</label>
+                    <button class="align-btn" data-align="left">Left</button>
+                    <button class="align-btn" data-align="center">Center</button>
+                    <button class="align-btn" data-align="right">Right</button>
+                </div>
+                <div class="input-row">
+                    <label>Text Color:</label>
+                    <button class="color-btn" data-color="blue" style="color: blue;">Blue</button>
+                    <button class="color-btn" data-color="black" style="color: black;">Black</button>
+                    <button class="color-btn" data-color="green" style="color: green;">Green</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

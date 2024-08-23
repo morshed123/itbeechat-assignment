@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Editor</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+        }
+
+        .components {
+            flex: 1;
+            min-width: 50%;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+        }
+
+        .left,
+        .right {
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .left {
+            background-color: #f0f0f0;
+        }
+
+        .right {
+            background-color: #fff;
+            border-left: 1px solid #ddd;
+            position: relative;
+        }
+
+        .items-btnarea {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview {
+            flex: 1;
+            min-width: 50%;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+        }
+
+        .items-title {
+            color: black;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .hd-preview {
+            color: black;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .items-btnarea .button {
+            width: 100%;
+            margin: 0px 10px;
+        }
+
+        .hd-btn {
+            color: black;
+            background: #fdd55e;
+        }
+
+        .hd-btn:hover {
+            background: #f7ba05;
+        }
+
+        .img-hd-btn {
+            color: black;
+            background: #81ef9d;
+        }
+
+        .img-hd-btn:hover {
+            background: #65fc8b;
+        }
+
+        .desc-hd-btn {
+            color: black;
+            background: #98d0f9;
+        }
+
+        .desc-hd-btn:hover {
+            background: #70bef5;
+        }
+
+        .button,
+        .close-btn,
+        .close-icon {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .title-icon-area {
+            display: flex;
+            justify-content: space-between;
+        }
+
+
+        .close-btn {
+            background-color: #dc3545;
+            display: none;
+        }
+
+        .close-btn:hover {
+            background-color: #c82333;
+        }
+
+        .close-icon {
+            background-color: transparent;
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 20px;
+            padding: 0;
+            display: inline;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .txtInput {
+            width: 100%;
+        }
+
+        .input-section {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .input-row label {
+            margin-right: 10px;
+        }
+
+        .input-row .align-btn,
+        .input-row .color-btn {
+            flex: 1;
+            margin: 5px;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        .input-row .align-btn.active,
+        .input-row .color-btn.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .live-preview {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .live-preview img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .download-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background-color: #218838;
+        }
+
+        .drop-zone {
+            border: 2px dashed #007bff;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .drop-zone.hover {
+            background-color: #f0f0f0;
+        }
+
+        @media (max-width: 768px) {
+            .input-row {
+                flex-direction: column;
+            }
+
+            .input-row .align-btn,
+            .input-row .color-btn {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="components">
+            <h1 class="title-com">Components</h1>
+            <div class="left">
+                <h1 class="items-title">Items</h1>
+                <div class="items-btnarea">
+                    <button class="button hd-btn" id="headingBtn">Heading</button>
+                    <button class="button img-hd-btn" id="imageBtn">Image</button>
+                    <button class="button desc-hd-btn" id="descBtn">Description</button>
+                </div>
+
+                <!-- Heading Section -->
+                <div class="input-section" id="headingSection">
+                    <div class="title-icon-area">
+                        <h1 class="hd-title">Heading</h1>
+                        <div class="hd-x">
+                            <button class="close-btn" id="closeHeadingBtn">Close</button>
+                            <span class="close-icon" id="closeHeadingIcon">X</span>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <label for="headingText">Heading Text:</label>
+                        <input type="text" class="txtInput" id="headingText" placeholder="Enter heading...">
+                    </div>
+                    <div class="input-row">
+                        <label>Text Alignment:</label>
+                        <button class="align-btn" data-align="left">Left</button>
+                        <button class="align-btn" data-align="center">Center</button>
+                        <button class="align-btn" data-align="right">Right</button>
+                    </div>
+                    <div class="input-row">
+                        <label>Text Color:</label>
+                        <button class="color-btn" data-color="blue" style="color: blue;">Blue</button>
+                        <button class="color-btn" data-color="black" style="color: black;">Black</button>
+                        <button class="color-btn" data-color="green" style="color: green;">Green</button>
+                    </div>
+                </div>
+
+                <!-- Image Section -->
+                <div class="input-section" id="imageSection">
+                    <button class="close-btn" id="closeImageBtn">Close</button>
+                    <span class="close-icon" id="closeImageIcon">X</span>
+                    <div class="input-row drop-zone" id="dropZone">
+                        <label for="imageUpload">Upload Image:</label>
+                        <input type="file" id="imageUpload" style="display: none;">
+                        <p>Drag & Drop your image here or click to select.</p>
+                    </div>
+                </div>
+
+                <!-- Description Section -->
+                <div class="input-section" id="descSection">
+                    <button class="close-btn" id="closeDescBtn">Close</button>
+                    <span class="close-icon" id="closeDescIcon">X</span>
+                    <div class="input-row">
+                        <label for="descText">Description:</label>
+                        <textarea id="descText" rows="5" placeholder="Enter description..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="preview">
+            <h1 class="hd-preview">Preview</h1>
+            <div class="right">
+                <div class="live-preview" id="livePreview">
+                    <h2 id="liveHeading"></h2>
+                    <img id="liveImage" src="" alt="" style="display:none;">
+                    <p id="liveDesc"></p>
+                </div>
+                <button class="download-btn" id="downloadBtn">Download as PNG</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        function showSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const button = document.getElementById(sectionId.replace('Section', 'Btn'));
+            const closeButton = document.getElementById(`close${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}`);
+            const closeIcon = document.getElementById(`close${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}Icon`);
+
+            if (section && button) {
+                section.style.display = 'block';
+                button.style.display = 'none';
+                if (closeButton) closeButton.style.display = 'block';
+                if (closeIcon) closeIcon.style.display = 'inline';
+
+                // Hide the title when the last button (Description) is clicked
+                if (sectionId === 'descSection') {
+                    document.querySelector('.items-title').style.display = 'none';
+                }
+            } else {
+                console.error(`Element with ID ${sectionId} or ${sectionId.replace('Section', 'Btn')} not found.`);
+            }
+        }
+
+        function closeSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const button = document.getElementById(sectionId.replace('Section', 'Btn'));
+            const closeButton = document.getElementById(`close${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}`);
+            const closeIcon = document.getElementById(`close${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}Icon`);
+
+            if (section && button) {
+                if (sectionId === 'headingSection') {
+                    document.getElementById('headingText').value = '';
+                    document.querySelectorAll('.align-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+                } else if (sectionId === 'imageSection') {
+                    document.getElementById('imageUpload').value = ''; // Clear the file input
+                    document.getElementById('liveImage').src = '';
+                    document.getElementById('liveImage').style.display = 'none';
+                } else if (sectionId === 'descSection') {
+                    document.getElementById('descText').value = '';
+                }
+
+                section.style.display = 'none';
+                button.style.display = 'block';
+                if (closeButton) closeButton.style.display = 'none';
+                if (closeIcon) closeIcon.style.display = 'none';
+
+                // Show the title again if any section is closed
+                document.querySelector('.items-title').style.display = 'block';
+
+                updateLivePreview(); // Update live preview to reflect cleared values
+            } else {
+                console.error(`Element with ID ${sectionId} or ${sectionId.replace('Section', 'Btn')} not found.`);
+            }
+        }
+
+        document.getElementById('headingBtn').addEventListener('click', () => showSection('headingSection'));
+        document.getElementById('imageBtn').addEventListener('click', () => showSection('imageSection'));
+        document.getElementById('descBtn').addEventListener('click', () => showSection('descSection'));
+
+        document.getElementById('closeHeadingBtn').addEventListener('click', () => closeSection('headingSection'));
+        document.getElementById('closeHeadingIcon').addEventListener('click', () => closeSection('headingSection'));
+
+        document.getElementById('closeImageBtn').addEventListener('click', () => closeSection('imageSection'));
+        document.getElementById('closeImageIcon').addEventListener('click', () => closeSection('imageSection'));
+
+        document.getElementById('closeDescBtn').addEventListener('click', () => closeSection('descSection'));
+        document.getElementById('closeDescIcon').addEventListener('click', () => closeSection('descSection'));
+
+        const alignBtns = document.querySelectorAll('.align-btn');
+        alignBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                alignBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const alignment = btn.getAttribute('data-align');
+                document.getElementById('liveHeading').style.textAlign = alignment;
+            });
+        });
+
+        const colorBtns = document.querySelectorAll('.color-btn');
+        colorBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                colorBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const color = btn.getAttribute('data-color');
+                document.getElementById('liveHeading').style.color = color;
+            });
+        });
+
+        document.getElementById('headingText').addEventListener('input', function () {
+            const heading = document.getElementById('headingText').value;
+            document.getElementById('liveHeading').innerText = heading;
+        });
+
+        const imageUpload = document.getElementById('imageUpload');
+        const liveImage = document.getElementById('liveImage');
+        const dropZone = document.getElementById('dropZone');
+
+        dropZone.addEventListener('dragover', function (event) {
+            event.preventDefault();
+            dropZone.classList.add('hover');
+        });
+
+        dropZone.addEventListener('dragleave', function () {
+            dropZone.classList.remove('hover');
+        });
+
+        dropZone.addEventListener('drop', function (event) {
+            event.preventDefault();
+            dropZone.classList.remove('hover');
+            const file = event.dataTransfer.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    liveImage.src = e.target.result;
+                    liveImage.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        dropZone.addEventListener('click', function () {
+            imageUpload.click();
+        });
+
+        imageUpload.addEventListener('change', function () {
+            const file = imageUpload.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    liveImage.src = e.target.result;
+                    liveImage.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('descText').addEventListener('input', function () {
+            const description = document.getElementById('descText').value;
+            document.getElementById('liveDesc').innerText = description;
+        });
+
+        document.getElementById('downloadBtn').addEventListener('click', function () {
+            const livePreview = document.getElementById('livePreview');
+            html2canvas(livePreview).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'live-preview.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        });
+    </script>
+</body>
+
+</html>

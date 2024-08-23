@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .gridElement {
+            margin-top: 50px;
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 1fr;
+            padding: 0 30px;
+        }
+
+        .comArea,
+        .previewArea {
+            position: relative;
+            border: 3px solid #ddd;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .hdTxtCom,
+        .hdTxtPre {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 3px solid blue;
+            border-radius: 6px;
+            background: #ddd;
+            padding: 5px 15px;
+            font-size: 26px;
+        }
+
+        .headingArea {
+            padding: 20px 0;
+        }
+
+        .hdContent {
+            position: relative;
+            height: 200px;
+            border: 3px solid #ddd;
+            border-radius: 6px;
+            margin: 20px;
+        }
+
+        .hdTxtTitle {
+            position: absolute;
+            top: -18px;
+            left: 12px;
+            border: 3px solid blue;
+            border-radius: 6px;
+            background: #ddd;
+            padding: 5px 15px;
+        }
+
+        .hdCloseIcon {
+            position: absolute;
+            top: -22px;
+            right: -12px;
+            border: 3px solid blue;
+            border-radius: 50%;
+            background: #ddd;
+            padding: 5px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .hdTpcArea {
+            position: absolute;
+            top: 60px;
+            padding: 0px 10px;
+            width: calc(100% - 20px);
+        }
+
+        .txtPcArea {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-right: 22px;
+            margin-top: 12px;
+        }
+
+        .textP button,
+        .textC button {
+            margin: 5px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .hdInputArea {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .hdTxtInput {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .downloadBtn {
+            padding: 10px;
+        }
+
+        @media only screen and (min-width: 768px) {
+            .gridElement {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .comArea,
+            .previewArea {
+                margin: 20px;
+            }
+
+            .hdTxtCom,
+            .hdTxtPre {
+                top: -30px;
+                font-size: 26px;
+                padding: 5px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gridElement">
+        <div class="comArea">
+            <div class="hdTxtCom">Components</div>
+            <div class="headingArea">
+                <div class="hdContent">
+                    <div class="hdTxtTitle">Heading</div>
+                    <div class="hdCloseIcon">X</div>
+                    <div class="hdTpcArea">
+                        <div class="hdInputArea">
+                            <input type="text" class="hdTxtInput" placeholder="Dashboard">
+                        </div>
+                        <div class="txtPcArea">
+                            <div class="textP">
+                                <button>Left</button>
+                                <button>Center</button>
+                                <button>Right</button>
+                            </div>
+                            <div class="textC">
+                                <button>Blue</button>
+                                <button>Red</button>
+                                <button>Green</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="previewArea">
+            <div class="hdTxtPre">Previews</div>
+            <div class="downloadBtn">
+                <p>Download</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

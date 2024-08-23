@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Editor</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+
+    <style>
+        body {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .gridElement {
+            width: 100%;
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 1fr 1fr;
+            padding: 20px;
+        }
+
+        .comArea,
+        .previewArea {
+            position: relative;
+            border: 3px solid #ddd;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .hdTxtCom,
+        .hdTxtPre {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 3px solid #efefef;
+            border-radius: 6px;
+            background: #fff;
+            padding: 5px 330px;
+            font-size: 26px;
+        }
+
+        .headingArea {
+            padding: 20px 0;
+        }
+
+        .hdContent {
+            position: relative;
+            height: 170px;
+            border: 3px solid #ddd;
+            border-radius: 6px;
+            margin: 25px;
+        }
+
+        .hdTxtTitle {
+            position: absolute;
+            top: -18px;
+            left: 12px;
+            border: 3px solid #ddd;
+            border-radius: 6px;
+            background: #ddd;
+            padding: 5px 15px;
+        }
+
+        .hdCloseIcon {
+            position: absolute;
+            top: -22px;
+            right: -16px;
+            border: 3px solid #efefef;
+            border-radius: 50%;
+            background: #fff;
+            padding: 5px 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .hdTpcArea {
+            position: absolute;
+            top: 40px;
+            padding: 0px 10px;
+            width: calc(100% - 20px);
+        }
+
+        .txtPcArea {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 12px;
+        }
+
+        .textP,
+        .textC {
+            display: flex;
+            margin: 8px 0px;
+        }
+
+        .textP .txtPlace,
+        .textC .textC {
+            margin: 0px;
+            padding: 6px 8px;
+            border: 1px solid #f5f5f5;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .hdInputArea {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .hdTxtInput {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .hdTxtAreas {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .downloadBtn {
+            padding: 10px;
+        }
+
+        .left,
+        .right {
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .left {
+            background-color: #f0f0f0;
+        }
+
+        .right {
+            border-left: 1px solid #ddd;
+            position: relative;
+        }
+
+        .items-btnarea {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview {
+            flex: 1;
+            min-width: 50%;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+        }
+
+        .items-title {
+            color: black;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .hd-preview {
+            color: black;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .items-btnarea .button {
+            width: 100%;
+            margin: 0px 10px;
+        }
+
+        .hd-btn {
+            color: black;
+            background: #fdd55e;
+        }
+
+        .hd-btn:hover {
+            background: #f7ba05;
+        }
+
+        .img-hd-btn {
+            color: black;
+            background: #81ef9d;
+        }
+
+        .img-hd-btn:hover {
+            background: #65fc8b;
+        }
+
+        .desc-hd-btn {
+            color: black;
+            background: #98d0f9;
+        }
+
+        .desc-hd-btn:hover {
+            background: #70bef5;
+        }
+
+        .button,
+        .close-btn,
+        .close-icon {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .title-icon-area {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .close-btn {
+            background-color: #dc3545;
+            display: none;
+        }
+
+        .close-btn:hover {
+            background-color: #c82333;
+        }
+
+        .close-icon {
+            background-color: transparent;
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 20px;
+            padding: 0;
+            display: inline;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .input-section {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .textP .align-btn.active,
+        .input-row .color-btn.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .live-preview {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .live-preview img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .download-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background-color: #218838;
+        }
+
+        .drop-zone {
+            background: #fff;
+            border: 2px dashed #c3c4c5;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .drop-zone.hover {
+            background-color: #f0f0f0;
+        }
+
+        @media (max-width: 768px) {
+            .gridElement {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+
+            .comArea,
+            .previewArea {
+                margin: 10px;
+            }
+
+            .hdTxtCom,
+            .hdTxtPre {
+                top: -25px;
+                font-size: 20px;
+                padding: 3px 10px;
+            }
+
+            .txtPcArea {
+                display: block;
+                align-items: center;
+                justify-content: space-between;
+                padding-right: 22px;
+                margin-top: 12px;
+            }
+
+            .items-btnarea {
+                flex-direction: column;
+            }
+
+            .items-btnarea .button {
+                width: 100%;
+                margin: 6px 0px;
+            }
+
+            .button {
+                margin: 5px 0;
+            }
+
+            .live-preview {
+                padding: 10px;
+            }
+
+            .download-btn {
+                bottom: 10px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="gridElement">
+        <div class="comArea">
+            <div class="hdTxtCom">Components</div>
+            <div class="headingArea">
+                <div class="left">
+                    <h1 class="items-title" id="itemsTitle">Items</h1>
+                    <div class="items-btnarea">
+                        <button class="button hd-btn" id="headingBtn">Heading</button>
+                        <button class="button img-hd-btn" id="imageBtn">Image</button>
+                        <button class="button desc-hd-btn" id="descBtn">Description</button>
+                    </div>
+
+                    <!-- Heading Section -->
+                    <div class="input-section" id="headingSection">
+                        <div class="hdContent">
+                            <div class="hdTxtTitle">Heading</div>
+                            <div class="hdCloseIcon" id="closeHeadingIcon">X</div>
+                            <div class="hdTpcArea">
+                                <div class="hdInputArea">
+                                    <input type="text" class="hdTxtInput" id="headingText"
+                                        placeholder="Enter heading...">
+                                </div>
+                                <div class="txtPcArea">
+                                    <div class="textP">
+                                        <button class="txtPlace align-btn" data-align="left">Left</button>
+                                        <button class="txtPlace align-btn" data-align="center">Center</button>
+                                        <button class="txtPlace align-btn" data-align="right">Right</button>
+                                    </div>
+                                    <div class="textC">
+                                        <button class="textC color-btn" data-color="blue">Blue</button>
+                                        <button class="textC color-btn" data-color="black">Black</button>
+                                        <button class="textC color-btn" data-color="green">Green</button>
+                                    </div>
+                                </div>
+                                <button class="button close-btn" id="closeHeading">Close</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Image Section -->
+                    <div class="input-section" id="imageSection">
+                        <div class="hdContent">
+                            <div class="hdTxtTitle">Image</div>
+                            <div class="hdCloseIcon" id="closeImageIcon">X</div>
+                            <div class="hdTpcArea">
+                                <div class="drop-zone" id="dropZone">
+                                    <p>Drop image here or click to upload</p>
+                                    <input type="file" id="imageUpload" style="display: none;">
+                                </div>
+                                <button class="button close-btn" id="closeImage">Close</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description Section -->
+                    <div class="input-section" id="descSection">
+                        <div class="hdContent">
+                            <div class="hdTxtTitle">Description</div>
+                            <div class="hdCloseIcon" id="closeDescIcon">X</div>
+                            <div class="hdTpcArea">
+                                <div class="hdInputArea">
+                                    <textarea class="hdTxtAreas" id="descText"
+                                        placeholder="Enter description..."></textarea>
+                                </div>
+                                <button class="button close-btn" id="closeDesc">Close</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="previewArea">
+            <div class="hdTxtPre">Preview</div>
+            <div class="right">
+                <h1 class="hd-preview">Live Preview</h1>
+                <div class="live-preview" id="livePreview"></div>
+            </div>
+            <button class="download-btn" id="downloadBtn">Download Preview as Image</button>
+        </div>
+    </div>
+
+    <script>
+        const headingBtn = document.getElementById('headingBtn');
+        const imageBtn = document.getElementById('imageBtn');
+        const descBtn = document.getElementById('descBtn');
+
+        const headingSection = document.getElementById('headingSection');
+        const imageSection = document.getElementById('imageSection');
+        const descSection = document.getElementById('descSection');
+        const itemsTitle = document.getElementById('itemsTitle');
+
+        const livePreview = document.getElementById('livePreview');
+        const headingTextInput = document.getElementById('headingText');
+        const imageUpload = document.getElementById('imageUpload');
+        const descTextInput = document.getElementById('descText');
+        const dropZone = document.getElementById('dropZone');
+
+        let currentImageElement = null;
+
+        // Event listeners for buttons
+        headingBtn.addEventListener('click', () => toggleSection(headingSection, headingBtn));
+        imageBtn.addEventListener('click', () => toggleSection(imageSection, imageBtn));
+        descBtn.addEventListener('click', () => toggleSection(descSection, descBtn));
+
+        // Event listeners for close icons
+        document.getElementById('closeHeadingIcon').addEventListener('click', () => closeSection(headingSection, headingBtn));
+        document.getElementById('closeImageIcon').addEventListener('click', () => closeSection(imageSection, imageBtn));
+        document.getElementById('closeDescIcon').addEventListener('click', () => closeSection(descSection, descBtn));
+
+        // Event listeners for live updating the preview
+        headingTextInput.addEventListener('input', updatePreview);
+        descTextInput.addEventListener('input', updatePreview);
+
+        document.querySelectorAll('.align-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                document.querySelectorAll('.align-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                updatePreview();
+            });
+        });
+
+        document.querySelectorAll('.color-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                updatePreview();
+            });
+        });
+
+        imageUpload.addEventListener('change', handleImageUpload);
+        dropZone.addEventListener('click', () => imageUpload.click());
+        dropZone.addEventListener('dragover', handleDragOver);
+        dropZone.addEventListener('drop', handleDrop);
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            dropZone.classList.add('hover');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            dropZone.classList.remove('hover');
+            const files = event.dataTransfer.files;
+            if (files.length) {
+                imageUpload.files = files;
+                handleImageUpload({ target: imageUpload });
+            }
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (currentImageElement) {
+                        currentImageElement.src = e.target.result;
+                    } else {
+                        currentImageElement = document.createElement('img');
+                        currentImageElement.src = e.target.result;
+                        currentImageElement.alt = 'Uploaded Image';
+                    }
+                    updatePreview();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Function to toggle sections
+        function toggleSection(section, button) {
+            section.style.display = section.style.display === 'block' ? 'none' : 'block';
+            button.style.display = 'none';
+            checkSectionsVisibility();
+            updatePreview();
+        }
+
+        // Function to close sections and show button
+        function closeSection(section, button) {
+            section.style.display = 'none';
+            button.style.display = 'block';
+            checkSectionsVisibility();
+            updatePreview();
+        }
+
+        // Function to update the live preview
+        function updatePreview() {
+            livePreview.innerHTML = '';
+
+            if (headingSection.style.display === 'block') {
+                const headingText = headingTextInput.value;
+                const headingElement = document.createElement('h1');
+                headingElement.textContent = headingText;
+
+                const alignBtn = document.querySelector('.align-btn.active');
+                if (alignBtn) {
+                    headingElement.style.textAlign = alignBtn.dataset.align;
+                }
+
+                const colorBtn = document.querySelector('.color-btn.active');
+                if (colorBtn) {
+                    headingElement.style.color = colorBtn.dataset.color;
+                }
+
+                livePreview.appendChild(headingElement);
+            }
+
+            if (currentImageElement && imageSection.style.display === 'block') {
+                livePreview.appendChild(currentImageElement);
+            }
+
+            if (descSection.style.display === 'block') {
+                const descText = descTextInput.value;
+                const descElement = document.createElement('p');
+                descElement.textContent = descText;
+                livePreview.appendChild(descElement);
+            }
+        }
+
+        // Function to check the visibility of all sections
+        function checkSectionsVisibility() {
+            const areAllSectionsVisible = (
+                headingSection.style.display === 'block' &&
+                imageSection.style.display === 'block' &&
+                descSection.style.display === 'block'
+            );
+            itemsTitle.style.display = areAllSectionsVisible ? 'none' : 'block';
+        }
+
+
+
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        downloadBtn.addEventListener('click', downloadImage);
+
+        // Function to download the preview section as an image
+        function downloadImage() {
+            html2canvas(document.getElementById('livePreview'), {
+                backgroundColor: '#ffffff', // Set background color to white
+                onrendered: function (canvas) {
+                    const link = document.createElement('a');
+                    link.href = canvas.toDataURL();
+                    link.download = 'preview.png';
+                    link.click();
+                }
+            });
+        }
+
+        // Initial call to ensure preview is correct on load
+        updatePreview();
+    </script>
+</body>
+
+</html>

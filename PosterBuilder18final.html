@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Editor</title>
+    <style>
+        body {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .left,
+        .right {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .left {
+            background-color: #f0f0f0;
+            max-width: 300px;
+        }
+
+        .right {
+            flex: 2;
+            background-color: #fff;
+            border-left: 1px solid #ddd;
+            position: relative;
+        }
+
+        .button,
+        .close-btn,
+        .close-icon {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+        }
+
+        .button {
+            background-color: #007bff;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .close-btn {
+            background-color: #dc3545;
+            display: none;
+        }
+
+        .close-btn:hover {
+            background-color: #c82333;
+        }
+
+        .close-icon {
+            background-color: transparent;
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 20px;
+            padding: 0;
+            display: inline;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .input-section {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .input-row label {
+            margin-right: 10px;
+        }
+
+        .input-row .align-btn,
+        .input-row .color-btn {
+            flex: 1;
+            margin: 5px;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        .input-row .align-btn.active,
+        .input-row .color-btn.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .live-preview {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .live-preview img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .download-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background-color: #218838;
+        }
+
+        .drop-zone {
+            border: 2px dashed #007bff;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .drop-zone.hover {
+            background-color: #f0f0f0;
+        }
+
+        @media (max-width: 768px) {
+            .input-row {
+                flex-direction: column;
+            }
+
+            .input-row .align-btn,
+            .input-row .color-btn {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="left">
+        <button class="button" id="headingBtn">Heading</button>
+        <button class="button" id="imageBtn">Image</button>
+        <button class="button" id="descBtn">Description</button>
+
+        <!-- Heading Section -->
+        <div class="input-section" id="headingSection">
+            <button class="close-btn" id="closeHeadingBtn">Close</button>
+            <span class="close-icon" id="closeHeadingIcon">X</span>
+            <div class="input-row">
+                <label for="headingText">Heading Text:</label>
+                <input type="text" id="headingText" placeholder="Enter heading...">
+            </div>
+            <div class="input-row">
+                <label>Text Alignment:</label>
+                <button class="align-btn" data-align="left">Left</button>
+                <button class="align-btn" data-align="center">Center</button>
+                <button class="align-btn" data-align="right">Right</button>
+            </div>
+            <div class="input-row">
+                <label>Text Color:</label>
+                <button class="color-btn" data-color="blue" style="color: blue;">Blue</button>
+                <button class="color-btn" data-color="black" style="color: black;">Black</button>
+                <button class="color-btn" data-color="green" style="color: green;">Green</button>
+            </div>
+        </div>
+
+        <!-- Image Section -->
+        <div class="input-section" id="imageSection">
+            <button class="close-btn" id="closeImageBtn">Close</button>
+            <span class="close-icon" id="closeImageIcon">X</span>
+            <div class="input-row drop-zone" id="dropZone">
+                <label for="imageUpload">Upload Image:</label>
+                <input type="file" id="imageUpload" style="display: none;">
+                <p>Drag & Drop your image here or click to select.</p>
+            </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="input-section" id="descSection">
+            <button class="close-btn" id="closeDescBtn">Close</button>
+            <span class="close-icon" id="closeDescIcon">X</span>
+            <div class="input-row">
+                <label for="descText">Description:</label>
+                <textarea id="descText" rows="5" placeholder="Enter description..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="right">
+        <div class="live-preview" id="livePreview">
+            <h2 id="liveHeading"></h2>
+            <img id="liveImage" src="" alt="" style="display:none;">
+            <p id="liveDesc"></p>
+        </div>
+        <button class="download-btn" id="downloadBtn">Download as PNG</button>
+    </div>
+
+    <!-- Load html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        // Function to show a section and hide the corresponding button
+        function showSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const button = document.getElementById(sectionId.replace('Section', 'Btn'));
+            const closeButton = document.getElementById(`close${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}`);
+            const closeIcon = document.getElementById(`close${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}Icon`);
+
+            if (section && button) {
+                section.style.display = 'block';
+                button.style.display = 'none';
+                if (closeButton) closeButton.style.display = 'block';
+                if (closeIcon) closeIcon.style.display = 'inline';
+            } else {
+                console.error(`Element with ID ${sectionId} or ${sectionId.replace('Section', 'Btn')} not found.`);
+            }
+
+            updateLivePreview(); // Update preview on the right side
+        }
+
+        // Function to close a section and show the corresponding button
+        function closeSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const button = document.getElementById(sectionId.replace('Section', 'Btn'));
+            const closeButton = document.getElementById(`close${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}`);
+            const closeIcon = document.getElementById(`close${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}Icon`);
+
+            if (section && button) {
+                section.style.display = 'none';
+                button.style.display = 'block';
+                if (closeButton) closeButton.style.display = 'none';
+                if (closeIcon) closeIcon.style.display = 'none';
+            } else {
+                console.error(`Element with ID ${sectionId} or ${sectionId.replace('Section', 'Btn')} not found.`);
+            }
+        }
+
+        // Event listeners for buttons to show the sections
+        document.getElementById('headingBtn').addEventListener('click', function () {
+            showSection('headingSection');
+        });
+
+        document.getElementById('imageBtn').addEventListener('click', function () {
+            showSection('imageSection');
+        });
+
+        document.getElementById('descBtn').addEventListener('click', function () {
+            showSection('descSection');
+        });
+
+        // Event listeners for close buttons
+        document.getElementById('closeHeadingBtn').addEventListener('click', function () {
+            closeSection('headingSection');
+        });
+
+        document.getElementById('closeHeadingIcon').addEventListener('click', function () {
+            closeSection('headingSection');
+        });
+
+        document.getElementById('closeImageBtn').addEventListener('click', function () {
+            closeSection('imageSection');
+        });
+
+        document.getElementById('closeImageIcon').addEventListener('click', function () {
+            closeSection('imageSection');
+        });
+
+        document.getElementById('closeDescBtn').addEventListener('click', function () {
+            closeSection('descSection');
+        });
+
+        document.getElementById('closeDescIcon').addEventListener('click', function () {
+            closeSection('descSection');
+        });
+
+        // Event listeners for inputs to update live preview
+        document.getElementById('headingText').addEventListener('input', function () {
+            updateLivePreview();
+        });
+
+        document.querySelectorAll('.align-btn').forEach(function (button) {
+            button.addEventListener('click', function () {
+                document.querySelectorAll('.align-btn').forEach(function (btn) {
+                    btn.classList.remove('active');
+                });
+                button.classList.add('active');
+                updateLivePreview();
+            });
+        });
+
+        document.querySelectorAll('.color-btn').forEach(function (button) {
+            button.addEventListener('click', function () {
+                document.querySelectorAll('.color-btn').forEach(function (btn) {
+                    btn.classList.remove('active');
+                });
+                button.classList.add('active');
+                updateLivePreview();
+            });
+        });
+
+        // Function to update the live preview
+        function updateLivePreview() {
+            const headingText = document.getElementById('headingText').value;
+            const headingAlign = document.querySelector('.align-btn.active') ? document.querySelector('.align-btn.active').getAttribute('data-align') : 'center';
+            const headingColor = document.querySelector('.color-btn.active') ? document.querySelector('.color-btn.active').getAttribute('data-color') : 'black';
+
+            const liveHeading = document.getElementById('liveHeading');
+            if (liveHeading) {
+                liveHeading.textContent = headingText;
+                liveHeading.style.textAlign = headingAlign;
+                liveHeading.style.color = headingColor;
+            }
+
+            // Update the live preview of the image
+            const fileInput = document.getElementById('imageUpload');
+            const liveImage = document.getElementById('liveImage');
+            if (fileInput && liveImage) {
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        liveImage.src = e.target.result;
+                        liveImage.style.display = 'block';
+                    }
+                    reader.readAsDataURL(fileInput.files[0]);
+                } else {
+                    liveImage.style.display = 'none'; // Hide image if no file is selected
+                }
+            }
+
+            // Update the live preview of the description
+            const descText = document.getElementById('descText').value;
+            const liveDesc = document.getElementById('liveDesc');
+            if (liveDesc) {
+                liveDesc.textContent = descText;
+            }
+        }
+
+        // Event listener for image upload to update the live preview
+        document.getElementById('imageUpload').addEventListener('change', function () {
+            updateLivePreview();
+        });
+
+        // Event listener for description input to update the live preview
+        document.getElementById('descText').addEventListener('input', function () {
+            updateLivePreview();
+        });
+
+        // Event listener to download the live preview as a PNG image
+        document.getElementById('downloadBtn').addEventListener('click', function () {
+            html2canvas(document.getElementById('livePreview'), { scale: 2 }).then(function (canvas) {
+                const link = document.createElement('a');
+                link.download = 'preview.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(function (error) {
+                console.error('Error generating PNG:', error);
+            });
+        });
+
+        // Drag and drop functionality
+        const dropZone = document.getElementById('dropZone');
+
+        dropZone.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.add('hover');
+        });
+
+        dropZone.addEventListener('dragleave', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.remove('hover');
+        });
+
+        dropZone.addEventListener('drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.remove('hover');
+
+            const files = e.dataTransfer.files;
+            if (files && files[0]) {
+                const file = files[0];
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    document.getElementById('liveImage').src = event.target.result;
+                    document.getElementById('liveImage').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        dropZone.addEventListener('click', function () {
+            document.getElementById('imageUpload').click();
+        });
+    </script>
+
+</body>
+
+</html>

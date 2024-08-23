@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Editor</title>
+    <style>
+        body {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .left,
+        .right {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .left {
+            background-color: #f0f0f0;
+            max-width: 300px;
+        }
+
+        .right {
+            flex: 2;
+            background-color: #fff;
+            border-left: 1px solid #ddd;
+            position: relative;
+        }
+
+        .button,
+        .close-btn {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+        }
+
+        .button {
+            background-color: #007bff;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .close-btn {
+            background-color: #dc3545;
+            display: none;
+        }
+
+        .close-btn:hover {
+            background-color: #c82333;
+        }
+
+        .input-section {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .input-row label {
+            margin-right: 10px;
+        }
+
+        .input-row .align-btn,
+        .input-row .color-btn {
+            flex: 1;
+            margin: 5px;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        .input-row .align-btn.active,
+        .input-row .color-btn.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .live-preview {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .live-preview img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .download-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background-color: #218838;
+        }
+
+        @media (max-width: 768px) {
+            .input-row {
+                flex-direction: column;
+            }
+
+            .input-row .align-btn,
+            .input-row .color-btn {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="left">
+        <button class="button" id="headingBtn">Heading</button>
+        <button class="button" id="imageBtn">Image</button>
+        <button class="button" id="descBtn">Description</button>
+
+        <!-- Heading Section -->
+        <div class="input-section" id="headingSection">
+            <button class="close-btn" id="closeHeadingBtn">Close</button>
+            <div class="input-row">
+                <label for="headingText">Heading Text:</label>
+                <input type="text" id="headingText" placeholder="Enter heading...">
+            </div>
+            <div class="input-row">
+                <label>Text Alignment:</label>
+                <button class="align-btn" data-align="left">Left</button>
+                <button class="align-btn" data-align="center">Center</button>
+                <button class="align-btn" data-align="right">Right</button>
+            </div>
+            <div class="input-row">
+                <label>Text Color:</label>
+                <button class="color-btn" data-color="blue" style="color: blue;">Blue</button>
+                <button class="color-btn" data-color="black" style="color: black;">Black</button>
+                <button class="color-btn" data-color="green" style="color: green;">Green</button>
+            </div>
+        </div>
+
+        <!-- Image Section -->
+        <div class="input-section" id="imageSection">
+            <button class="close-btn" id="closeImageBtn">Close</button>
+            <div class="input-row">
+                <label for="imageUpload">Upload Image:</label>
+                <input type="file" id="imageUpload">
+            </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="input-section" id="descSection">
+            <button class="close-btn" id="closeDescBtn">Close</button>
+            <div class="input-row">
+                <label for="descText">Description:</label>
+                <textarea id="descText" rows="5" placeholder="Enter description..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="right">
+        <div class="live-preview" id="livePreview">
+            <h2 id="liveHeading"></h2>
+            <img id="liveImage" src="" alt="" style="display:none;">
+            <p id="liveDesc"></p>
+        </div>
+        <button class="download-btn" id="downloadBtn">Download as PNG</button>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.input-section').forEach(section => {
+                if (section.id === sectionId) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+
+            document.querySelectorAll('.button').forEach(button => {
+                if (button.id === sectionId.replace('Section', 'Btn')) {
+                    button.style.display = 'none';
+                } else {
+                    button.style.display = 'block';
+                }
+            });
+
+            document.querySelectorAll('.close-btn').forEach(btn => {
+                if (btn.id === `close${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}`) {
+                    btn.style.display = 'block';
+                } else {
+                    btn.style.display = 'none';
+                }
+            });
+
+            updateLivePreview(); // Update preview on right side
+        }
+
+        function closeSection(sectionId) {
+            document.getElementById(sectionId).style.display = 'none';
+            document.getElementById(`${sectionId.replace('Section', 'Btn')}`).style.display = 'block';
+            document.getElementById(`close${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}`).style.display = 'none';
+        }
+
+        document.getElementById('headingBtn').addEventListener('click', function () {
+            showSection('headingSection');
+        });
+
+        document.getElementById('imageBtn').addEventListener('click', function () {
+            showSection('imageSection');
+        });
+
+        document.getElementById('descBtn').addEventListener('click', function () {
+            showSection('descSection');
+        });
+
+        document.getElementById('closeHeadingBtn').addEventListener('click', function () {
+            closeSection('headingSection');
+        });
+
+        document.getElementById('closeImageBtn').addEventListener('click', function () {
+            closeSection('imageSection');
+        });
+
+        document.getElementById('closeDescBtn').addEventListener('click', function () {
+            closeSection('descSection');
+        });
+
+        document.getElementById('headingText').addEventListener('input', function () {
+            updateLivePreview();
+        });
+
+        document.querySelectorAll('.align-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                document.querySelectorAll('.align-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                updateLivePreview();
+            });
+        });
+
+        document.querySelectorAll('.color-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                updateLivePreview();
+            });
+        });
+
+        function updateLivePreview() {
+            const headingText = document.getElementById('headingText').value;
+            const activeAlignBtn = document.querySelector('.align-btn.active');
+            const activeColorBtn = document.querySelector('.color-btn.active');
+            const headingAlign = activeAlignBtn ? activeAlignBtn.getAttribute('data-align') : 'left';
+            const headingColor = activeColorBtn ? activeColorBtn.getAttribute('data-color') : 'black';
+
+            const liveHeading = document.getElementById('liveHeading');
+            liveHeading.textContent = headingText;
+            liveHeading.style.textAlign = headingAlign;
+            liveHeading.style.color = headingColor;
+
+            updateLiveImagePreview();
+            updateLiveDescPreview();
+        }
+
+        function updateLiveImagePreview() {
+            const fileInput = document.getElementById('imageUpload');
+            const liveImage = document.getElementById('liveImage');
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    liveImage.src = e.target.result;
+                    liveImage.style.display = 'block';
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                liveImage.style.display = 'none'; // Hide image if no file is selected
+            }
+        }
+
+        document.getElementById('imageUpload').addEventListener('change', function () {
+            updateLivePreview();
+        });
+
+        document.getElementById('descText').addEventListener('input', function () {
+            updateLivePreview();
+        });
+
+        function updateLiveDescPreview() {
+            const descText = document.getElementById('descText').value;
+            document.getElementById('liveDesc').textContent = descText;
+        }
+
+        document.getElementById('downloadBtn').addEventListener('click', function () {
+            const livePreview = document.getElementById('livePreview');
+
+            html2canvas(livePreview).then(function (canvas) {
+                const link = document.createElement('a');
+                link.download = 'preview.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        });
+
+        var script = document.createElement('script');
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js";
+        document.head.appendChild(script);
+    </script>
+
+</body>
+
+</html>
