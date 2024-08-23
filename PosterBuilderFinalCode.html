@@ -592,10 +592,14 @@
             }
         }
 
+        // Function to check the visibility of all sections
         function checkSectionsVisibility() {
-            if (headingSection.style.display === 'none' && imageSection.style.display === 'none' && descSection.style.display === 'none') {
-                livePreview.innerHTML = '<p>No content to display</p>';
-            }
+            const areAllSectionsVisible = (
+                headingSection.style.display === 'block' &&
+                imageSection.style.display === 'block' &&
+                descSection.style.display === 'block'
+            );
+            itemsTitle.style.display = areAllSectionsVisible ? 'none' : 'block';
         }
 
         // Download functionality
